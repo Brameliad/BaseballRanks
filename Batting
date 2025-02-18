@@ -1,0 +1,92 @@
+public class Batting{
+    private int[][] inputs = {{311, 62, 131}, {332, 58, 144}, {271,27,104}, {295,20,65}};
+    private int[] outputs = {1, 1, 0, 0};
+    private float[][] weights = new float[4][3];
+    public Batting(){
+        for(int i = 0; i < 4; i++){  
+        for(int x = 0; x < 3; x++){
+         weights[i][x] = (float)(Math.random()*3)-1;   
+         //weights[i][x]=0;
+        }
+        }
+    }
+    public int guessPlayer(int avg, int hr, int rbi){
+     float a;
+        float b;
+        float c;
+        int output;
+        
+                a = (weights[0][0]*avg);
+                b = (weights[0][1]*hr);
+                c = (weights[0][2]*rbi);
+                output = (int)((a+b+c));
+                return output/535;
+         
+    }
+    public void getWeights(){
+        for(int i = 0; i<weights.length; i++){
+            for(float x: weights[i]){
+                System.out.print(x);
+            }
+        }
+    }
+    public void avgWeights(){
+        for(int i = 0; i<3; i++){
+            weights[0][i]=(weights[0][i]+weights[1][i]+weights[2][i]+weights[3][i])/4;
+        }
+        
+    }
+    public int[] getOutput(){
+        float a;
+        float b;
+        float c;
+        int[] output = new int[4];
+        this.avgWeights();
+        for(int i = 0; i<inputs.length; i++){
+                a = (weights[0][0]*(float)inputs[i][0]);
+                b = (weights[0][1]*(float)inputs[i][1]);
+                c = (weights[0][2]*(float)inputs[i][2]);
+                output[i] = Math.round((a+b+c))/535;
+        }
+        return output;
+    }
+    public float trainX(int x){
+       float guess = (inputs[x][0]*weights[x][0])+(inputs[x][2]*weights[x][2])+(inputs[x][1]*weights[x][1]); 
+       return outputs[x]-guess;
+    }
+    public void train(){
+       float before;
+       float after;
+       for(int x = 0; x<3; x++){
+       for(int i = 0; i < 100000; i++){
+           //float guess = (inputs[x][0]*weights[x][0])+(inputs[x][2]*weights[x][2])+(inputs[x][1]*weights[x][1]);    
+               for(int a = 0; a<inputs.length; a++){
+                before = this.trainX(a);
+                weights[a][x] += 0.001;
+                after = this.trainX(a);
+                if(before<after){
+                    weights[a][x]-=0.002;
+                }
+               }
+               
+               
+           
+           
+       } 
+       }
+       this.avgWeights();
+       
+    }
+    public static void main(String[] args){
+      Batting m1 = new Batting();
+      m1.train();
+      m1.getWeights();
+      int[] outputs = m1.getOutput();
+      System.out.println();
+      for(int i = 0; i<=3; i++){
+      System.out.println(outputs[i]);
+      }
+      System.out.println(m1.guessPlayer(304, 44, 95));
+      System.out.println(m1.guessPlayer(332, 30, 103));
+    }
+}
