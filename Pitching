@@ -78,7 +78,7 @@ public class Pitching{
        
     }
     public static void main(String[] args){
-      Main m1 = new Main();
+      Pitching m1 = new Pitching();
       m1.train();
       m1.getWeights();
       int[] outputs = m1.getOutput();
